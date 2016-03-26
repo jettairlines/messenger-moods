@@ -1,0 +1,11 @@
+# os x
+.DS_Store
+
+# sass
+.sass-cache/
+style.css.map
+style.scss
+
+#data
+data/
+messages.htm

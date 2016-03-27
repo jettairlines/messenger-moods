@@ -14,7 +14,7 @@ This image is generated from my own messenger data
 - Drag (unzipped folder)/html/messages.htm into cloned repo
 - Run
     ```
-    $ python data.py
+    $ python data.py [your facebook name that appears in chat]
     ```
 - Open index.html to view results
 

@@ -1,12 +1,17 @@
 from HTMLParser import HTMLParser
 import nltk
-nltk.download()
+# nltk.download()
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import operator
 import datetime
 import json
+import sys
 
 month_dict = {"January":1,"February":2,"March":3,"April":4, "May":5, "June":6,"July":7,"August":8,"September":9,"October":10,"November":11,"December":12}
+
+# get param
+sys.argv.pop(0)
+name = " ".join(sys.argv);
 
 quotes = []
 times = []
@@ -15,7 +20,7 @@ class AllLanguages(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
         self.msgcount = 0
-        self.jw = False
+        self.sender = False
         self.lasttag = None
         self.lastclass = None
 
@@ -27,20 +32,22 @@ class AllLanguages(HTMLParser):
             if name == 'class':
             	self.lastclass = value
             	##print ">>of class " + value
-            	
+
 
     def handle_data(self, data):
     	global datas
     	if self.lasttag == 'span' and self.lastclass == 'user':
-        	if data == 'Jett Wang':
-        		self.jw = True
+        	if data == name:
+        		self.sender = True
         	else:
-        		self.jw = False
-        if self.lasttag == 'span' and self.lastclass == 'meta' and self.jw:
+        		self.sender = False
+        if self.lasttag == 'span' and self.lastclass == 'meta' and self.sender:
         	times.append(data)
-        if self.lasttag == 'p' and self.jw:
-        	self.jw = False
+        if self.lasttag == 'p' and self.sender:
+        	self.sender = False
         	quotes.append(data);
+
+
         
 myfile = open('messages.htm', 'r').read()
 parser = AllLanguages()
@@ -89,10 +96,10 @@ for time,res in result.iteritems():
 # result = sorted(result)
 
 values = [{"date": k, "mood": v} for k, v in result.items()]
-with open('data.js', 'r+') as outfile:
+with open('data.js', 'w+') as outfile:
 	content = outfile.read()
 	outfile.seek(0, 0)
 	outfile.write("var data = ")
 	json.dump(values, outfile, indent=4)
 	
-print "data parsing complete ¯\_(ツ)_/¯"
+print "data parsing complete :'^)"
